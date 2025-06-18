@@ -207,6 +207,8 @@ public class Item
     };
 }
 
+// Андрей ЛОХ
+
 public class Enemy
 {
     Random random = new Random();
