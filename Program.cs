@@ -65,7 +65,7 @@ public class Hero
         name = heroName;
         health = 100;
         maxHealth = 100;
-        attackPower = 15;
+        attackPower = 150;
         magicPower = 25;
         inventory = new List<Item>();
     }
@@ -130,7 +130,7 @@ public class Hero
 
     public void DisplayStatus()
     {
-        if (this.health > this.maxHealth / 3 * 2)
+        if (this.health > this.maxHealth * 0.6)
         {
             Console.WriteLine($"Герой: [{this.name}] | HP: [\u001b[32m{this.health}\u001b[0m]/[{this.maxHealth}] | Атака: [{this.attackPower}]");
         }
@@ -152,11 +152,17 @@ public class Hero
         if (inventory.Count < this.maxInventorySize)
         {
             this.inventory.Add(item);
+            this.health += item.healthBonus;
+            this.maxHealth += item.healthBonus;
+            this.attackPower += item.attackBonus;
+            this.magicPower += item.magicBonus;
         }
         else
         {
             Console.WriteLine("Инвентарь полон!");
         }
+
+
     }
 
     public void InventoryDisplayInfo()
@@ -176,7 +182,6 @@ public class Hero
         }
     }
 
-
 }
 
 public class Item
@@ -186,6 +191,7 @@ public class Item
     public int healthBonus;
     public int attackBonus;
     public int magicBonus;
+    public Hero Hero;
 
     public Item()
     {
@@ -197,7 +203,7 @@ public class Item
 
     public void ItemDisplayInfo()
     {
-        Console.WriteLine($"{this.name} \n +{this.healthBonus} HP \n +{this.attackBonus} AP \n +{this.magicBonus} MP");
+            Console.WriteLine($"{this.name} \n +{this.healthBonus} HP \n +{this.attackBonus} AP \n +{this.magicBonus} MP");
     }
 
 
@@ -300,6 +306,10 @@ public static class GameEngine
                 case 3:
                     hero.Heal();
                     break;
+                case 4:
+                    hero.InventoryDisplayInfo();
+                    break;
+
             }
 
             // Проверяем, жив ли враг
@@ -307,6 +317,8 @@ public static class GameEngine
             {
                 Console.WriteLine($"{enemy.name} повержен!");
                 Item item = new Item();
+                hero.AddToInventory(item);
+                item.ItemDisplayInfo();
                 return;
             }
 
@@ -330,6 +342,7 @@ public static class GameEngine
         Console.WriteLine("1 - Атака");
         Console.WriteLine("2 - Заклинание (больше урона, но тратит HP)");
         Console.WriteLine("3 - Лечение");
+        Console.WriteLine("4 - Показ инвентаря");
     }
 
     public static int GetPlayerChoice()
@@ -337,12 +350,12 @@ public static class GameEngine
         int choice;
         while (true)
         {
-            Console.Write("Ваш выбор (1-3): ");
-            if (int.TryParse(Console.ReadLine(), out choice) && choice >= 1 && choice <= 3)
+            Console.Write("Ваш выбор (1-4): ");
+            if (int.TryParse(Console.ReadLine(), out choice) && choice >= 1 && choice <= 4)
             {
                 return choice;
             }
-            Console.WriteLine("Неверный выбор! Введите число от 1 до 3.");
+            Console.WriteLine("Неверный выбор! Введите число от 1 до 4.");
         }
     }
 
