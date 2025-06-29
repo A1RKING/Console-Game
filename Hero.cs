@@ -1,9 +1,5 @@
 ﻿using static Item;
-using static Hero;
 using static Enemy;
-using static GameEngine;
-using static GameMessages;
-using static Program;
 
 public class Hero
 {
@@ -22,10 +18,9 @@ public class Hero
         name = heroName;
         health = 100;
         maxHealth = 100;
-        attackPower = 15;
+        attackPower = 150;
         magicPower = 25;
         armor = 3;
-        inventory = new List<Item>();
     }
 
     public void Attack(Enemy target)
@@ -37,11 +32,10 @@ public class Hero
 
     public void CastSpell(Enemy target)
     {
-        int recoil = 0;
         int totalDamage = magicPower + random.Next(1, 10);
         target.TakeDamage(totalDamage);
-        this.TakeDamage(totalDamage / 3);
-        recoil = (totalDamage / 3);
+        int recoil = (totalDamage / 3);
+        this.TakeDamage(recoil);
         GameMessages.ShowDamage(this.name, target.name, totalDamage);
         Console.WriteLine($"Магическая отдача нанесла {recoil} урона!");
     }
@@ -50,9 +44,10 @@ public class Hero
     {
         if (this.health > 0)
         {
-            this.health = this.health - damage;
+            this.health = this.health - (damage - armor);
         }
-        else if (this.health <= 0)
+        
+        if (this.health <= 0)
         {
             this.health = 0;
         }

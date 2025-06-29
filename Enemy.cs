@@ -1,9 +1,4 @@
-﻿using static Item;
-using static Hero;
-using static Enemy;
-using static GameEngine;
-using static GameMessages;
-using static Program;
+﻿using static Hero;
 
 public class Enemy
 {
@@ -23,10 +18,9 @@ public class Enemy
 
     public void Attack(Hero target)
     {
-        int totalDamage = this.attackPower + random.Next(1, 5) - target.armor;
-        if (totalDamage <= 0) totalDamage = 0;
-        else
-            target.TakeDamage(totalDamage);
+        int totalDamage = this.attackPower + random.Next(1, 5);
+        if (totalDamage <= 0) totalDamage = 0; else
+        target.TakeDamage(totalDamage);
         GameMessages.ShowDamage(this.name, target.name, totalDamage);
     }
 
@@ -36,7 +30,8 @@ public class Enemy
         {
             this.health = this.health - damage;
         }
-        else if (this.health <= 0)
+
+        if (this.health <= 0)
         {
             this.health = 0;
         }
@@ -44,14 +39,7 @@ public class Enemy
 
     public bool IsAlive()
     {
-        if (this.health > 0)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return this.health > 0;
     }
 
     public void DisplayInfo()
