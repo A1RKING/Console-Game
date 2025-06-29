@@ -29,17 +29,17 @@
 //   Что нужно сделать:
 //    V Создать класс предмета.
 //    V Добавить в этот класс характеристики предмета (например, +к урону или +к хп).
-//    - Характеристики назначаются рандомные при создании предмета.
+//    V Характеристики назначаются рандомные при создании предмета.
 //    V Игроку добавить инвентарь (список предметов).
-//    - После убийства моба создается случайный предмет и добавляется в инвентарь.
-//    - При атаке игрока или при получении урона считаются все предметы и их баффы на урон или защиту.
+//    V После убийства моба создается случайный предмет и добавляется в инвентарь.
+//    V При атаке игрока или при получении урона считаются все предметы и их баффы на урон или защиту.
 
 //   Задача со звездочкой:
-//    - Создать enum редкости предметов и добавить в класс предмета.
-//    - При создании предмета рандомно определяется еще редкость.
-//    - Каждая редкость имеет постоянный коэффициент к характеристикам предмета.
-//    - У каждой редкости есть свой цвет (раз уж в консоль выводить научился). Пишешь в консоль после убийства моба - получен предмет с такими-то характеристиками.
-//    - Присвоение случайного имени
+//    V Создать enum редкости предметов и добавить в класс предмета.
+//    V При создании предмета рандомно определяется еще редкость.
+//    V Каждая редкость имеет постоянный коэффициент к характеристикам предмета.
+//    V У каждой редкости есть свой цвет (раз уж в консоль выводить научился). Пишешь в консоль после убийства моба - получен предмет с такими-то характеристиками.
+//    V Присвоение случайного имени
 //   Задача с двумя звездочками:
 //    - Создать enum с типами предметов(кольцо, меч, шапка и т.д..)
 //    - При создании предмета добавлять ему еще тип.
@@ -47,7 +47,9 @@
 //
 // ПРИМЕР СТРУКТУРЫ:
 using System;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
+using static Item;
 
 public class Hero
 {
@@ -58,6 +60,7 @@ public class Hero
     public int maxHealth;
     public int attackPower;
     public int magicPower;
+    public int armor;
     public int maxInventorySize = 10;
 
     public Hero(string heroName)
@@ -65,8 +68,9 @@ public class Hero
         name = heroName;
         health = 100;
         maxHealth = 100;
-        attackPower = 150;
+        attackPower = 15;
         magicPower = 25;
+        armor = 3;
         inventory = new List<Item>();
     }
 
@@ -188,32 +192,103 @@ public class Item
 {
     Random random = new Random();
     public string name;
+    public string rare;
     public int healthBonus;
     public int attackBonus;
     public int magicBonus;
+    public int armorBonus;
     public Hero Hero;
+    public ItemRare Rarity;
 
     public Item()
     {
         this.name = itemNames[random.Next(itemNames.Length)];
-        this.healthBonus = random.Next(5, 20);
-        this.attackBonus = random.Next(1, 5);
-        this.magicBonus = random.Next(2, 10);
+        DetermineRarity();
+        RarityBonus();
     }
 
     public void ItemDisplayInfo()
     {
-            Console.WriteLine($"{this.name} \n +{this.healthBonus} HP \n +{this.attackBonus} AP \n +{this.magicBonus} MP");
+        if (rare == "Uncommon")
+        {
+            Console.WriteLine($"[{this.rare}] {this.name} \n +{this.healthBonus} HP \n +{this.attackBonus} AP \n +{this.magicBonus} MP");
+        } else if (rare == "Rare")
+        {
+            Console.WriteLine($"[\u001b[32m{this.rare}\u001b[0m] {this.name} \n +{this.healthBonus} HP \n +{this.attackBonus} AP \n +{this.magicBonus} MP");
+        } else if (rare == "Epic")
+        {
+            Console.WriteLine($"[\u001b[35m{this.rare}\u001b[0m] {this.name} \n +{this.healthBonus} HP \n +{this.attackBonus} AP \n +{this.magicBonus} MP");
+        } else if (rare == "Legendary")
+        {
+            Console.WriteLine($"[\u001b[33m{this.rare}\u001b[0m] {this.name} \n +{this.healthBonus} HP \n +{this.attackBonus} AP \n +{this.magicBonus} MP");
+        } else
+        {
+            Console.WriteLine("System Error");
+        }
+
+
     }
 
 
     public string[] itemNames =
     {
-        "Кольцо 0" , "Кольцо 1" , "Кольцо 2" , "Кольцо 3" , "Кольцо 4" , "Кольцо 5"
+        "Кольцо решимости" , "Плащ маштабирования" , "Зачарованые сапоги" , "Наручи ловкости" , "Шлем благословления" , "Анальная пробка достоинства"
     };
-}
 
-// Андрей ЛОХ
+
+    public void DetermineRarity()
+    {
+        int roll = random.Next(1, 21);
+
+        if (roll >= 19)
+            this.Rarity = ItemRare.legendary;
+        else if (roll >= 16)
+            this.Rarity = ItemRare.epic;
+        else if (roll >= 10)
+            this.Rarity = ItemRare.rare;
+        else
+            this.Rarity = ItemRare.uncommon;
+    }
+
+    public void RarityBonus()
+    {
+        switch (this.Rarity)
+        {
+            case ItemRare.uncommon:
+                this.rare = "Uncommon";
+                this.healthBonus = random.Next(1, 10);
+                this.attackBonus = random.Next(1, 2);
+                this.magicBonus = random.Next(1, 4);
+                break;
+            case ItemRare.rare:
+                this.rare = "Rare";
+                this.healthBonus = random.Next(2, 15);
+                this.attackBonus = random.Next(2, 4);
+                this.magicBonus = random.Next(2, 8);
+                break;
+            case ItemRare.epic:
+                this.rare = "Epic";
+                this.healthBonus = random.Next(3, 20);
+                this.attackBonus = random.Next(3, 6);
+                this.magicBonus = random.Next(3, 12);
+                break;
+            case ItemRare.legendary:
+                this.rare = "Legendary";
+                this.healthBonus = random.Next(4, 25);
+                this.attackBonus = random.Next(4, 8);
+                this.magicBonus = random.Next(4, 16);
+                break;
+        }
+    }
+
+    public enum ItemRare
+    {
+        uncommon,
+        rare,
+        epic,
+        legendary
+    }
+}
 
 public class Enemy
 {
@@ -233,7 +308,8 @@ public class Enemy
 
     public void Attack(Hero target)
     {
-        int totalDamage = this.attackPower + random.Next(1, 5);
+        int totalDamage = this.attackPower + random.Next(1, 5) - target.armor;
+        if (totalDamage <= 0) totalDamage = 0; else
         target.TakeDamage(totalDamage);
         GameMessages.ShowDamage(this.name, target.name, totalDamage);
         // Атакуем героя
@@ -278,6 +354,11 @@ public class Enemy
 public static class GameEngine
 {
     static Random random = new Random();
+    private static EnemyRace Rarity;
+    private static string name;
+    private static int health;
+    private static int attack;
+
 
     public static void StartBattle(Hero hero, Enemy enemy)
     {
@@ -361,14 +442,79 @@ public static class GameEngine
 
     public static Enemy CreateRandomEnemy()
     {
-        string[] enemyNames = { "Гоблин", "Орк", "Скелет", "Волк", "Бандит" };
-        string name = enemyNames[random.Next(enemyNames.Length)];
-        int health = random.Next(50, 81); // от 50 до 80 HP
-        int attack = random.Next(15, 26);  // от 15 до 25 урона
+        DetermineEnemy();
+        EnemyStats();
         
+
 
         return new Enemy(name, health, attack);
     }
+
+    public static void DetermineEnemy()
+    {
+        int roll = random.Next(1, 21);
+
+        if (roll >= 19)
+            Rarity = EnemyRace.GreatOgr;
+        else if (roll >= 16)
+            Rarity = EnemyRace.bandit;
+        else if (roll >= 12)
+            Rarity = EnemyRace.wolf;
+        else if (roll >= 8)
+            Rarity = EnemyRace.skelet;
+        else if (roll >= 4)
+            Rarity = EnemyRace.orc;
+        else if (roll >= 0)
+            Rarity = EnemyRace.goblin;
+    }
+
+    public static void EnemyStats()
+    {
+        switch (GameEngine.Rarity)
+        {
+            case EnemyRace.goblin:
+                name = "Гоблин";
+                health = random.Next(50, 61);
+                attack = random.Next(10, 16);
+                break;
+            case EnemyRace.orc:
+                name = "Орк";
+                health = random.Next(60, 81);
+                attack = random.Next(15, 21);
+                break;
+            case EnemyRace.skelet:
+                name = "Скелет";
+                health = random.Next(80, 91);
+                attack = random.Next(15, 26);
+                break;
+            case EnemyRace.wolf:
+                name = "Волк";
+                health = random.Next(40, 51);
+                attack = random.Next(10, 16);
+                break;
+            case EnemyRace.bandit:
+                name = "Бандит";
+                health = random.Next(60, 71);
+                attack = random.Next(10, 21);
+                break;
+            case EnemyRace.GreatOgr:
+                name = "Великий Вождь Огр";
+                health = random.Next(160, 201);
+                attack = random.Next(30, 51);
+                break;
+        }
+    }
+
+    enum EnemyRace
+    {
+        goblin,
+        orc,
+        skelet,
+        wolf,
+        bandit,
+        GreatOgr
+    }
+
 }
 
 public static class GameMessages
@@ -404,31 +550,31 @@ class Program
     static void Main(string[] args)
     {
         GameMessages.ShowWelcome();
-        
+
         Console.Write("Введите имя вашего героя: ");
         string heroName = Console.ReadLine();
         Hero player = new Hero(heroName);
-        
+
         Console.WriteLine($"Герой {heroName} готов к приключениям!");
-        
+
         // Игровой цикл
         while (player.IsAlive())
         {
             Enemy currentEnemy = GameEngine.CreateRandomEnemy();
             Console.WriteLine($"\nПоявился новый враг: {currentEnemy.name}!");
-            
+
             GameEngine.StartBattle(player, currentEnemy);
-            
+
             if (!player.IsAlive())
             {
                 Console.WriteLine("\n=== ИГРА ОКОНЧЕНА ===");
                 break;
             }
-            
+
             Console.WriteLine("\nНажмите Enter для следующего боя...");
             Console.ReadLine();
         }
-        
+
         Console.WriteLine("Спасибо за игру!");
     }
 }
