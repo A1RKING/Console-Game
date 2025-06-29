@@ -79,9 +79,6 @@ public class Hero
         int totalDamage = attackPower + random.Next(1, 5);
         target.TakeDamage(totalDamage);
         GameMessages.ShowDamage(this.name, target.name, totalDamage);
-        // Наносим урон врагу
-        // Можно добавить случайность: Random для урона ±5
-        // target.TakeDamage(attackPower);
     }
 
     public void CastSpell(Enemy target)
@@ -93,8 +90,6 @@ public class Hero
         recoil = (totalDamage / 3);
         GameMessages.ShowDamage(this.name, target.name, totalDamage);
         Console.WriteLine($"Магическая отдача нанесла {recoil} урона!");
-        // Магическая атака - больше урона, но тратит здоровье
-        // Например: урон = magicPower + 10, но теряем 5 здоровья
     }
 
     public void TakeDamage(int damage)
@@ -107,8 +102,6 @@ public class Hero
         {
             this.health = 0;
         }
-        // Уменьшаем health на damage
-        // Если health < 0, то health = 0
     }
 
     public void Heal()
@@ -122,14 +115,11 @@ public class Hero
             this.health = this.maxHealth;
         }
         Console.WriteLine($"Уровень очков здоровья: {this.health}");
-        // Восстанавливаем здоровье (например +25)
-        // Но не больше maxHealth
     }
 
     public bool IsAlive()
     {
         return this.health > 0;
-        // Возвращаем true если health > 0
     }
 
     public void DisplayStatus()
@@ -146,9 +136,6 @@ public class Hero
         {
             Console.WriteLine($"Герой: [{this.name}] | HP: [\u001b[31m{this.health}\u001b[0m]/[{this.maxHealth}] | Атака: [{this.attackPower}]");
         }
-
-        // Выводим: "Герой: [имя] | HP: [здоровье]/[макс] | Атака: [сила]"
-        // Можно цветом: зеленый если здоровья много, красный если мало
     }
 
     public void AddToInventory(Item item)
@@ -244,7 +231,7 @@ public class Item
             this.Rarity = ItemRare.legendary;
         else if (roll >= 16)
             this.Rarity = ItemRare.epic;
-        else if (roll >= 10)
+        else if (roll >= 11)
             this.Rarity = ItemRare.rare;
         else
             this.Rarity = ItemRare.uncommon;
@@ -312,8 +299,6 @@ public class Enemy
         if (totalDamage <= 0) totalDamage = 0; else
         target.TakeDamage(totalDamage);
         GameMessages.ShowDamage(this.name, target.name, totalDamage);
-        // Атакуем героя
-        // target.TakeDamage(attackPower);
     }
 
     public void TakeDamage(int damage)
@@ -326,7 +311,6 @@ public class Enemy
         {
             this.health = 0;
         }
-        // Получаем урон, как у героя
     }
 
     public bool IsAlive()
@@ -339,13 +323,11 @@ public class Enemy
         {
             return false;
         }
-        // Проверяем жив ли враг
     }
 
     public void DisplayInfo()
     {
         Console.WriteLine($"Враг: [{this.name}] | HP: [{this.health}]/[{this.maxHealth}]  | Атака: [{this.attackPower}]");
-        // "Враг: [имя] | HP: [здоровье]/[макс]"
     }
 }
 
@@ -355,7 +337,7 @@ public static class GameEngine
 {
     static Random random = new Random();
     private static EnemyRace Rarity;
-    private static string name;
+    private static string name = "";
     private static int health;
     private static int attack;
 
