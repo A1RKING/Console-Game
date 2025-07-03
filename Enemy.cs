@@ -112,17 +112,29 @@ public class Enemy
         EnemyRace enemyType;
 
         if (roll >= 19)
+        {
             enemyType = EnemyRace.GreatOgr;
+        }
         else if (roll >= 16)
+        {
             enemyType = EnemyRace.bandit;
+        }
         else if (roll >= 12)
+        {
             enemyType = EnemyRace.wolf;
+        }
         else if (roll >= 8)
+        {
             enemyType = EnemyRace.skelet;
+        }
         else if (roll >= 4)
+        {
             enemyType = EnemyRace.orc;
+        }
         else
+        {
             enemyType = EnemyRace.goblin;
+        }
 
         return enemyType;
     }

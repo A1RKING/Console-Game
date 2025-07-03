@@ -1,5 +1,6 @@
 ﻿using static Item;
 using static Enemy;
+using System.Diagnostics.CodeAnalysis;
 
 public class Hero
 {
