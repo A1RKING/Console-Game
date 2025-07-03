@@ -6,7 +6,6 @@ public class Enemy
 
     // Статические
     static Random random = new Random();
-    private static EnemyRace enemyType;
     enum EnemyRace
     {
         goblin,
