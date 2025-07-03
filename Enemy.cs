@@ -4,72 +4,40 @@ using static Program;
 public class Enemy
 {
 
+    // Статические
     static Random random = new Random();
     private static EnemyRace enemyType;
-    public static string name;
-    public static int health;
-    public static int maxHealth;
-    public static int attackPower;
-
-    public void Attack(Hero target)
+    enum EnemyRace
     {
-        int totalDamage = attackPower + random.Next(1, 5);
-        if (totalDamage <= 0) totalDamage = 0;
-        else
-            target.TakeDamage(totalDamage);
-        GameMessages.ShowDamage(name, target.name, totalDamage);
+        goblin,
+        orc,
+        skelet,
+        wolf,
+        bandit,
+        GreatOgr
     }
 
-    public void TakeDamage(int damage)
-    {
-        if (health > 0)
-        {
-            health = health - damage;
-        }
+    // НЕстатические
+    public string name;
+    public int health;
+    public int maxHealth;
+    public int attackPower;
 
-        if (health <= 0)
-        {
-            health = 0;
-        }
-    }
-
-    public bool IsAlive()
+    public Enemy(string name, int health, int attackPower)
     {
-        return health > 0;
-    }
-
-    public void DisplayInfo()
-    {
-        Console.WriteLine($"Враг: [{name}] | HP: [{health}]/[{maxHealth}]  | Атака: [{attackPower}]");
+        this.name = name;
+        this.health = health;
+        this.maxHealth = health;
+        this.attackPower = attackPower;
     }
 
     public static Enemy CreateRandomEnemy()
     {
-        DetermineEnemy();
-        GetEnemyStats();
-        return new Enemy(name, health, attackPower);
-    }
+        EnemyRace enemyType = GetRandomEnemyType();
+        string name = "";
+        int health = 0;
+        int attackPower = 0;
 
-    public static void DetermineEnemy()
-    {
-        int roll = random.Next(1, 21);
-
-        if (roll >= 19)
-            enemyType = EnemyRace.GreatOgr;
-        else if (roll >= 16)
-            enemyType = EnemyRace.bandit;
-        else if (roll >= 12)
-            enemyType = EnemyRace.wolf;
-        else if (roll >= 8)
-            enemyType = EnemyRace.skelet;
-        else if (roll >= 4)
-            enemyType = EnemyRace.orc;
-        else if (roll >= 0)
-            enemyType = EnemyRace.goblin;
-    }
-
-    public static void GetEnemyStats()
-    {
         switch (enemyType)
         {
             case EnemyRace.goblin:
@@ -103,15 +71,60 @@ public class Enemy
                 attackPower = random.Next(30, 51);
                 break;
         }
+
+        return new Enemy(name, health, attackPower);
     }
 
-    enum EnemyRace
+
+    public void Attack(Hero target)
     {
-        goblin,
-        orc,
-        skelet,
-        wolf,
-        bandit,
-        GreatOgr
+        int totalDamage = attackPower + random.Next(1, 5);
+        if (totalDamage <= 0) totalDamage = 0;
+        target.TakeDamage(totalDamage);
+        GameMessages.ShowDamage(name, target.name, totalDamage);
+    }
+
+    public void TakeDamage(int damage)
+    {
+        if (health > 0)
+        {
+            health = health - damage;
+        }
+
+        if (health <= 0)
+        {
+            health = 0;
+        }
+    }
+
+    public bool IsAlive()
+    {
+        return health > 0;
+    }
+
+    public void DisplayInfo()
+    {
+        Console.WriteLine($"Враг: [{name}] | HP: [{health}]/[{maxHealth}]  | Атака: [{attackPower}]");
+    }
+
+    static EnemyRace GetRandomEnemyType()
+    {
+        int roll = random.Next(1, 21);
+        EnemyRace enemyType;
+
+        if (roll >= 19)
+            enemyType = EnemyRace.GreatOgr;
+        else if (roll >= 16)
+            enemyType = EnemyRace.bandit;
+        else if (roll >= 12)
+            enemyType = EnemyRace.wolf;
+        else if (roll >= 8)
+            enemyType = EnemyRace.skelet;
+        else if (roll >= 4)
+            enemyType = EnemyRace.orc;
+        else
+            enemyType = EnemyRace.goblin;
+
+        return enemyType;
     }
 }
