@@ -4,7 +4,6 @@ using static Enemy;
 using static GameEngine;
 using static GameMessages;
 using static Program;
-
 public class Item
 {
     Random random = new Random();
@@ -182,4 +181,14 @@ public class Item
         epic,
         legendary
     }
+}
+
+public class Inventory
+{
+    Item head;
+    Item hands;
+    Item legs;
+    Item body;
+    List<Item> rings;
+    Item weapon;
 }

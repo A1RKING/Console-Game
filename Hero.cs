@@ -4,7 +4,7 @@ using static Enemy;
 public class Hero
 {
     Random random = new Random();
-    public List<Item> inventory = new List<Item>(10);
+    public List<Item> inventory = new List<Item>();
     public string name;
     public int health;
     public int maxHealth;
