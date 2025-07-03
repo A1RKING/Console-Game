@@ -52,19 +52,9 @@ using System.Security.Cryptography.X509Certificates;
 using static Item;
 using static Hero;
 using static Enemy;
-using static GameEngine;
-using static GameMessages;
-using static Program;
 
 public static class GameEngine
 {
-    static Random random = new Random();
-    private static EnemyRace Rarity;
-    private static string name = "";
-    private static int health;
-    private static int attack;
-
-
     public static void StartBattle(Hero hero, Enemy enemy)
     {
         Console.WriteLine($"\n=== БОЙ НАЧАЛСЯ! ===");
@@ -94,6 +84,7 @@ public static class GameEngine
                     break;
                 case 4:
                     hero.InventoryDisplayInfo();
+                    ShowPlayerMenu();
                     break;
 
             }
@@ -145,80 +136,6 @@ public static class GameEngine
         }
     }
 
-    public static Enemy CreateRandomEnemy()
-    {
-        DetermineEnemy();
-        EnemyStats();
-        
-
-
-        return new Enemy(name, health, attack);
-    }
-
-    public static void DetermineEnemy()
-    {
-        int roll = random.Next(1, 21);
-
-        if (roll >= 19)
-            Rarity = EnemyRace.GreatOgr;
-        else if (roll >= 16)
-            Rarity = EnemyRace.bandit;
-        else if (roll >= 12)
-            Rarity = EnemyRace.wolf;
-        else if (roll >= 8)
-            Rarity = EnemyRace.skelet;
-        else if (roll >= 4)
-            Rarity = EnemyRace.orc;
-        else if (roll >= 0)
-            Rarity = EnemyRace.goblin;
-    }
-
-    public static void EnemyStats()
-    {
-        switch (GameEngine.Rarity)
-        {
-            case EnemyRace.goblin:
-                name = "Гоблин";
-                health = random.Next(50, 61);
-                attack = random.Next(10, 16);
-                break;
-            case EnemyRace.orc:
-                name = "Орк";
-                health = random.Next(60, 81);
-                attack = random.Next(15, 21);
-                break;
-            case EnemyRace.skelet:
-                name = "Скелет";
-                health = random.Next(80, 91);
-                attack = random.Next(15, 26);
-                break;
-            case EnemyRace.wolf:
-                name = "Волк";
-                health = random.Next(40, 51);
-                attack = random.Next(10, 16);
-                break;
-            case EnemyRace.bandit:
-                name = "Бандит";
-                health = random.Next(60, 71);
-                attack = random.Next(10, 21);
-                break;
-            case EnemyRace.GreatOgr:
-                name = "Великий Вождь Огр";
-                health = random.Next(160, 201);
-                attack = random.Next(30, 51);
-                break;
-        }
-    }
-
-    enum EnemyRace
-    {
-        goblin,
-        orc,
-        skelet,
-        wolf,
-        bandit,
-        GreatOgr
-    }
 
 }
 
@@ -263,7 +180,7 @@ class Program
         // Игровой цикл
         while (player.IsAlive())
         {
-            Enemy currentEnemy = GameEngine.CreateRandomEnemy();
+            Enemy currentEnemy = Enemy.CreateRandomEnemy();
             Console.WriteLine($"\nПоявился новый враг: {currentEnemy.name}!");
 
             GameEngine.StartBattle(player, currentEnemy);

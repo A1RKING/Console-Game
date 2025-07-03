@@ -1,49 +1,117 @@
 ﻿using static Hero;
+using static Program;
 
 public class Enemy
 {
-    Random random = new Random();
-    public string name;
-    public int health;
-    public int maxHealth;
-    public int attackPower;
 
-    public Enemy(string enemyName, int hp, int attack)
-    {
-        this.name = enemyName;
-        this.health = hp;
-        this.maxHealth = hp;
-        this.attackPower = attack;
-    }
+    static Random random = new Random();
+    private static EnemyRace enemyType;
+    public static string name;
+    public static int health;
+    public static int maxHealth;
+    public static int attackPower;
 
     public void Attack(Hero target)
     {
-        int totalDamage = this.attackPower + random.Next(1, 5);
-        if (totalDamage <= 0) totalDamage = 0; else
-        target.TakeDamage(totalDamage);
-        GameMessages.ShowDamage(this.name, target.name, totalDamage);
+        int totalDamage = attackPower + random.Next(1, 5);
+        if (totalDamage <= 0) totalDamage = 0;
+        else
+            target.TakeDamage(totalDamage);
+        GameMessages.ShowDamage(name, target.name, totalDamage);
     }
 
     public void TakeDamage(int damage)
     {
-        if (this.health > 0)
+        if (health > 0)
         {
-            this.health = this.health - damage;
+            health = health - damage;
         }
 
-        if (this.health <= 0)
+        if (health <= 0)
         {
-            this.health = 0;
+            health = 0;
         }
     }
 
     public bool IsAlive()
     {
-        return this.health > 0;
+        return health > 0;
     }
 
     public void DisplayInfo()
     {
-        Console.WriteLine($"Враг: [{this.name}] | HP: [{this.health}]/[{this.maxHealth}]  | Атака: [{this.attackPower}]");
+        Console.WriteLine($"Враг: [{name}] | HP: [{health}]/[{maxHealth}]  | Атака: [{attackPower}]");
+    }
+
+    public static Enemy CreateRandomEnemy()
+    {
+        DetermineEnemy();
+        GetEnemyStats();
+        return new Enemy(name, health, attackPower);
+    }
+
+    public static void DetermineEnemy()
+    {
+        int roll = random.Next(1, 21);
+
+        if (roll >= 19)
+            enemyType = EnemyRace.GreatOgr;
+        else if (roll >= 16)
+            enemyType = EnemyRace.bandit;
+        else if (roll >= 12)
+            enemyType = EnemyRace.wolf;
+        else if (roll >= 8)
+            enemyType = EnemyRace.skelet;
+        else if (roll >= 4)
+            enemyType = EnemyRace.orc;
+        else if (roll >= 0)
+            enemyType = EnemyRace.goblin;
+    }
+
+    public static void GetEnemyStats()
+    {
+        switch (enemyType)
+        {
+            case EnemyRace.goblin:
+                name = "Гоблин";
+                health = random.Next(50, 61);
+                attackPower = random.Next(10, 16);
+                break;
+            case EnemyRace.orc:
+                name = "Орк";
+                health = random.Next(60, 81);
+                attackPower = random.Next(15, 21);
+                break;
+            case EnemyRace.skelet:
+                name = "Скелет";
+                health = random.Next(80, 91);
+                attackPower = random.Next(15, 26);
+                break;
+            case EnemyRace.wolf:
+                name = "Волк";
+                health = random.Next(40, 51);
+                attackPower = random.Next(10, 16);
+                break;
+            case EnemyRace.bandit:
+                name = "Бандит";
+                health = random.Next(60, 71);
+                attackPower = random.Next(10, 21);
+                break;
+            case EnemyRace.GreatOgr:
+                name = "Великий Вождь Огр";
+                health = random.Next(160, 201);
+                attackPower = random.Next(30, 51);
+                break;
+        }
+    }
+
+    enum EnemyRace
+    {
+        goblin,
+        orc,
+        skelet,
+        wolf,
+        bandit,
+        GreatOgr
     }
 }
