@@ -14,6 +14,7 @@ public class Enemy
         wolf,
         bandit,
         GreatOgr
+
     }
 
     // НЕстатические
