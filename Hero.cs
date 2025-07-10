@@ -26,44 +26,73 @@ public class Hero
 
     public void Attack(Enemy target)
     {
-        int totalDamage = attackPower + random.Next(1, 5);
-        target.TakeDamage(totalDamage);
-        GameMessages.ShowDamage(this.name, target.name, totalDamage);
+        int totalDamage = attackPower + random.Next(1, 5) - target.armor;
+        if (totalDamage < 0 && target.armor == 999)
+        {
+            totalDamage = 0;
+            Console.WriteLine("Цель имеет иммунитет к магии!");
+            target.TakeDamage(totalDamage);
+        }
+        else if (totalDamage < 0)
+        {
+            totalDamage = 0;
+            target.TakeDamage(totalDamage);
+        }
+        else
+        {
+            target.TakeDamage(totalDamage);
+        }
+            GameMessages.ShowDamage(this.name, target.name, totalDamage);
     }
 
     public void CastSpell(Enemy target)
     {
         int totalDamage = magicPower + random.Next(1, 10);
-        target.TakeDamage(totalDamage);
-        int recoil = (totalDamage / 3);
-        this.TakeDamage(recoil);
+        if (target.magicResist == true)
+        {
+            totalDamage = 0;
+            target.TakeDamage(totalDamage);
+            Console.WriteLine("Цель имеет иммнитет к магии!");
+        } 
+        else if (target.armor == 999)
+        {
+            totalDamage = totalDamage * 3;
+            target.TakeDamage(totalDamage);
+        } 
+        else
+        {
+            target.TakeDamage(totalDamage);
+        }
+
+        int recoil = (totalDamage / 4);
+        if (target.armor == 999)
+        {
+            recoil = 0;
+            this.TakeDamage(recoil);
+        }
+        else
+        {
+            this.TakeDamage(recoil);
+        }
+            
         GameMessages.ShowDamage(this.name, target.name, totalDamage);
         Console.WriteLine($"Магическая отдача нанесла {recoil} урона!");
     }
 
     public void TakeDamage(int damage)
     {
-        if (this.health > 0)
-        {
-            this.health = this.health - (damage - armor);
-        }
-        
-        if (this.health <= 0)
-        {
-            this.health = 0;
-        }
+        if (this.health > 0) this.health = this.health - damage;
+
+        if (this.health <= 0) this.health = 0;
     }
 
     public void Heal()
     {
-        int totalHeal = this.magicPower + random.Next(10, 25);
+        int totalHeal = this.magicPower + random.Next(20, 35);
         this.health = this.health + totalHeal;
         Console.WriteLine($"{this.name} восполнил здоровье на {totalHeal}!");
 
-        if (this.health > this.maxHealth)
-        {
-            this.health = this.maxHealth;
-        }
+        if (this.health > this.maxHealth) this.health = this.maxHealth;
         Console.WriteLine($"Уровень очков здоровья: {this.health}");
     }
 
