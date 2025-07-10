@@ -103,7 +103,11 @@ public class Item
 
     public void ItemDisplayInfo()
     {
-        Console.WriteLine($" [{Type}] \n [{this.rare}] {this.name} \n +{this.healthBonus} HP \n +{this.attackBonus} AP \n +{this.magicBonus} MP");
+        Console.WriteLine($" [{Type}] \n [{this.rare}] {this.name} " +
+                                    $"\n +{this.healthBonus} HP " +
+                                    $"\n +{this.attackBonus} AP " +
+                                    $"\n +{this.magicBonus} MP " +
+                                    $"\n +{this.armorBonus} DEF");
     }
 
     public void GetItemName()
@@ -138,17 +142,17 @@ public class Item
 
     public void GetItemRarity()
     {
-        int roll = random.Next(1, 20);
+        int roll = random.Next(1, 21);
 
-        if (roll >= 17)
+        if (roll >= 18)
         {
             this.Rarity = ItemRare.legendary;
         }
-        else if (roll >= 14)
+        else if (roll >= 15)
         {
             this.Rarity = ItemRare.epic;
         }
-        else if (roll >= 11)
+        else if (roll >= 8)
         {
             this.Rarity = ItemRare.rare;
         }
@@ -197,31 +201,31 @@ public void GetItemType()
         {
             case ItemRare.uncommon:
                 this.rare = "Uncommon";
-                this.healthBonus = random.Next(1, 10);
-                this.attackBonus = random.Next(1, 2);
-                this.magicBonus = random.Next(1, 4);
-                this.armorBonus = 1;
+                this.healthBonus = random.Next(5, 10);
+                this.attackBonus = random.Next(1, 3);
+                this.magicBonus = random.Next(3, 5);
+                this.armorBonus = 2;
                 break;
             case ItemRare.rare:
                 this.rare = "\u001b[32mRare\u001b[0m";
-                this.healthBonus = random.Next(2, 15);
-                this.attackBonus = random.Next(2, 4);
-                this.magicBonus = random.Next(2, 8);
-                this.armorBonus = 2;
+                this.healthBonus = random.Next(10, 15);
+                this.attackBonus = random.Next(3, 6);
+                this.magicBonus = random.Next(5, 10);
+                this.armorBonus = 4;
                 break;
             case ItemRare.epic:
                 this.rare = "\u001b[35mEpic\u001b[0m";
-                this.healthBonus = random.Next(3, 20);
-                this.attackBonus = random.Next(3, 6);
-                this.magicBonus = random.Next(3, 12);
-                this.armorBonus = 3;
+                this.healthBonus = random.Next(15, 20);
+                this.attackBonus = random.Next(6, 12);
+                this.magicBonus = random.Next(8, 15);
+                this.armorBonus = 8;
                 break;
             case ItemRare.legendary:
                 this.rare = "\u001b[33mLegendary\u001b[0m";
-                this.healthBonus = random.Next(4, 25);
-                this.attackBonus = random.Next(4, 8);
-                this.magicBonus = random.Next(4, 16);
-                this.armorBonus = 4;
+                this.healthBonus = random.Next(25, 40);
+                this.attackBonus = random.Next(15, 20);
+                this.magicBonus = random.Next(15, 25);
+                this.armorBonus = 10;
                 break;
         }
     }

@@ -17,9 +17,9 @@ public class Hero
     public Hero(string heroName)
     {
         name = heroName;
-        health = 100;
-        maxHealth = 100;
-        attackPower = 150;
+        health = 150;
+        maxHealth = health;
+        attackPower = 15;
         magicPower = 25;
         armor = 3;
     }

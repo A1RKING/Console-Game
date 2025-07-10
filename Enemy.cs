@@ -154,6 +154,7 @@ public class Enemy
     static EnemyRace GetRandomEnemyType()
     {
         int roll = random.Next(1, 27);
+
         EnemyRace enemyType = EnemyRace.enemy;
 
         switch (roll)
