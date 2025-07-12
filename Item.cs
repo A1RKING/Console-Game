@@ -13,6 +13,7 @@ public class Item
     public string name;
     public string rare;
     public string type;
+    public string typeName;
     public int healthBonus;
     public int attackBonus;
     public int magicBonus;
@@ -20,72 +21,104 @@ public class Item
     public ItemRare Rarity;
     public ItemType Type;
 
-    public class Inventory()
+    public class Inventory
     {
-        public static Item head = new Item();
-        public static Item hands = new Item();
-        public static Item legs = new Item();
-        public static Item body = new Item();
-        public static Item rings = new Item();
-        public static Item weapon = new Item();
-        public void EquipItem(Item item)
+        public static Item head = null;
+        public static Item hands = null;
+        public static Item legs = null;
+        public static Item body = null;
+        public static Item rings = null;
+        public static Item weapon = null;
+
+        public static void EquipItem(Item item)
         {
             switch (item.Type)
             {
                 case ItemType.head:
-                    Inventory.head = item;
+                    head = item;
                     break;
                 case ItemType.hands:
-                    Inventory.hands = item;
+                    hands = item;
                     break;
                 case ItemType.legs:
-                    Inventory.legs = item;
+                    legs = item;
                     break;
                 case ItemType.body:
-                    Inventory.body = item;
+                    body = item;
                     break;
                 case ItemType.rings:
-                    Inventory.rings = item;
+                    rings = item;
                     break;
                 case ItemType.weapon:
-                    Inventory.weapon = item;
+                    weapon = item;
                     break;
             }
         }
 
-        public (int health, int attack, int magic, int armor) GetStatsSum()
+        public static Item GetEquippedItem(ItemType type)
         {
-            int sumHealth = (Inventory.head?.healthBonus ?? 0) +
-                           (Inventory.hands?.healthBonus ?? 0) +
-                           (Inventory.legs?.healthBonus ?? 0) +
-                           (Inventory.body?.healthBonus ?? 0) +
-                           (Inventory.rings?.healthBonus ?? 0) +
-                           (Inventory.weapon?.healthBonus ?? 0);
+            Item result = null;
+            switch (type)
+            {
+                case ItemType.head:
+                    result = head;
+                    break;
+                case ItemType.hands:
+                    result = hands;
+                    break;
+                case ItemType.legs:
+                    result = legs;
+                    break;
+                case ItemType.body:
+                    result = body;
+                    break;
+                case ItemType.rings:
+                    result = rings;
+                    break;
+                case ItemType.weapon:
+                    result = weapon;
+                    break;
+                default:
+                    result = null;
+                    break;
+            }
+            return result;
+        }
 
-            int sumAttack = (Inventory.head?.attackBonus ?? 0) +
-                           (Inventory.hands?.attackBonus ?? 0) +
-                           (Inventory.legs?.attackBonus ?? 0) +
-                           (Inventory.body?.attackBonus ?? 0) +
-                           (Inventory.rings?.attackBonus ?? 0) +
-                           (Inventory.weapon?.attackBonus ?? 0);
+        public static (int health, int attack, int magic, int armor) GetStatsSum()
+        {
+            int sumHealth = (head?.healthBonus ?? 0) +
+                          (hands?.healthBonus ?? 0) +
+                          (legs?.healthBonus ?? 0) +
+                          (body?.healthBonus ?? 0) +
+                          (rings?.healthBonus ?? 0) +
+                          (weapon?.healthBonus ?? 0);
 
-            int sumMagic = (Inventory.head?.magicBonus ?? 0) +
-                          (Inventory.hands?.magicBonus ?? 0) +
-                          (Inventory.legs?.magicBonus ?? 0) +
-                          (Inventory.body?.magicBonus ?? 0) +
-                          (Inventory.rings?.magicBonus ?? 0) +
-                          (Inventory.weapon?.magicBonus ?? 0);
+            int sumAttack = (head?.attackBonus ?? 0) +
+                          (hands?.attackBonus ?? 0) +
+                          (legs?.attackBonus ?? 0) +
+                          (body?.attackBonus ?? 0) +
+                          (rings?.attackBonus ?? 0) +
+                          (weapon?.attackBonus ?? 0);
 
-            int sumArmor = (Inventory.head?.armorBonus ?? 0) +
-                          (Inventory.hands?.armorBonus ?? 0) +
-                          (Inventory.legs?.armorBonus ?? 0) +
-                          (Inventory.body?.armorBonus ?? 0) +
-                          (Inventory.rings?.armorBonus ?? 0) +
-                          (Inventory.weapon?.armorBonus ?? 0);
+            int sumMagic = (head?.magicBonus ?? 0) +
+                         (hands?.magicBonus ?? 0) +
+                         (legs?.magicBonus ?? 0) +
+                         (body?.magicBonus ?? 0) +
+                         (rings?.magicBonus ?? 0) +
+                         (weapon?.magicBonus ?? 0);
+
+            int sumArmor = (head?.armorBonus ?? 0) +
+                         (hands?.armorBonus ?? 0) +
+                         (legs?.armorBonus ?? 0) +
+                         (body?.armorBonus ?? 0) +
+                         (rings?.armorBonus ?? 0) +
+                         (weapon?.armorBonus ?? 0);
 
             return (sumHealth, sumAttack, sumMagic, sumArmor);
         }
     }
+
     public Item()
     {
         healthBonus = 0;
@@ -99,15 +132,13 @@ public class Item
         RarityBonus();
     }
 
-
-
     public void ItemDisplayInfo()
     {
-        Console.WriteLine($" [{Type}] \n [{this.rare}] {this.name} " +
-                                    $"\n +{this.healthBonus} HP " +
-                                    $"\n +{this.attackBonus} AP " +
-                                    $"\n +{this.magicBonus} MP " +
-                                    $"\n +{this.armorBonus} DEF");
+        Console.WriteLine($"\n [{this.typeName}] \n [{this.rare}] {this.name} " +
+                        $"\n +{this.healthBonus} HP " +
+                        $"\n +{this.attackBonus} AP " +
+                        $"\n +{this.magicBonus} MP " +
+                        $"\n +{this.armorBonus} DEF");
     }
 
     public void GetItemName()
@@ -138,8 +169,6 @@ public class Item
         }
     }
 
-
-
     public void GetItemRarity()
     {
         int roll = random.Next(1, 21);
@@ -162,66 +191,69 @@ public class Item
         }
     }
 
-
-
-
-
-public void GetItemType()
+    public void GetItemType()
     {
         int roll = random.Next(1, 19);
 
         if (roll >= 16)
         {
             this.Type = ItemType.head;
+            this.typeName = "Шлем";
         }
         else if (roll >= 13)
         {
             this.Type = ItemType.hands;
+            this.typeName = "Перчатки";
         }
         else if (roll >= 10)
         {
             this.Type = ItemType.legs;
+            this.typeName = "Штаны";
         }
         else if (roll >= 7)
         {
             this.Type = ItemType.body;
+            this.typeName = "Кираса";
         }
         else if (roll >= 4)
         {
             this.Type = ItemType.rings;
+            this.typeName = "Кольцо";
         }
         else
         {
             this.Type = ItemType.weapon;
+            this.typeName = "Оружие";
         }
     }
+
     public void RarityBonus()
     {
         switch (this.Rarity)
         {
             case ItemRare.uncommon:
-                this.rare = "Uncommon";
+                this.rare = "Обычный";
                 this.healthBonus = random.Next(5, 10);
                 this.attackBonus = random.Next(1, 3);
                 this.magicBonus = random.Next(3, 5);
                 this.armorBonus = 2;
                 break;
             case ItemRare.rare:
-                this.rare = "\u001b[32mRare\u001b[0m";
+                this.rare = "\u001b[32mРедкый\u001b[0m";
                 this.healthBonus = random.Next(10, 15);
                 this.attackBonus = random.Next(3, 6);
                 this.magicBonus = random.Next(5, 10);
                 this.armorBonus = 4;
                 break;
             case ItemRare.epic:
-                this.rare = "\u001b[35mEpic\u001b[0m";
+                this.rare = "\u001b[35mЭпическый\u001b[0m";
                 this.healthBonus = random.Next(15, 20);
                 this.attackBonus = random.Next(6, 12);
                 this.magicBonus = random.Next(8, 15);
                 this.armorBonus = 8;
                 break;
             case ItemRare.legendary:
-                this.rare = "\u001b[33mLegendary\u001b[0m";
+                this.rare = "\u001b[33mЛегендарный\u001b[0m";
                 this.healthBonus = random.Next(25, 40);
                 this.attackBonus = random.Next(15, 20);
                 this.magicBonus = random.Next(15, 25);
@@ -232,6 +264,7 @@ public void GetItemType()
 
     public enum ItemRare
     {
+        none,
         uncommon,
         rare,
         epic,
@@ -239,7 +272,8 @@ public void GetItemType()
     }
 
     public enum ItemType
-    { 
+    {
+        none,
         head,
         hands,
         legs,

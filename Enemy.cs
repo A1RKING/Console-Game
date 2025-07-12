@@ -8,7 +8,7 @@ public class Enemy
     static Random random = new Random();
     enum EnemyRace
     {
-        enemy,
+        none,
         goblin,
         orc,
         skelet,
@@ -96,7 +96,7 @@ public class Enemy
                 name = "Призрак";
                 health = random.Next(160, 201);
                 attackPower = random.Next(5, 16);
-                armor = 999;
+                armor = 9999;
                 magicResist = false;
                 break;
             case EnemyRace.berserk:
@@ -155,7 +155,7 @@ public class Enemy
     {
         int roll = random.Next(1, 27);
 
-        EnemyRace enemyType = EnemyRace.enemy;
+        EnemyRace enemyType = EnemyRace.none;
 
         switch (roll)
         {

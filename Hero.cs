@@ -1,6 +1,7 @@
 ﻿using static Item;
 using static Enemy;
 using System.Diagnostics.CodeAnalysis;
+using System;
 
 public class Hero
 {
@@ -42,7 +43,7 @@ public class Hero
         {
             target.TakeDamage(totalDamage);
         }
-            GameMessages.ShowDamage(this.name, target.name, totalDamage);
+        GameMessages.ShowDamage(this.name, target.name, totalDamage);
     }
 
     public void CastSpell(Enemy target)
@@ -53,19 +54,19 @@ public class Hero
             totalDamage = 0;
             target.TakeDamage(totalDamage);
             Console.WriteLine("Цель имеет иммнитет к магии!");
-        } 
-        else if (target.armor == 999)
+        }
+        else if (target.armor == 9999)
         {
             totalDamage = totalDamage * 3;
             target.TakeDamage(totalDamage);
-        } 
+        }
         else
         {
             target.TakeDamage(totalDamage);
         }
 
         int recoil = (totalDamage / 4);
-        if (target.armor == 999)
+        if (target.armor == 9999)
         {
             recoil = 0;
             this.TakeDamage(recoil);
@@ -74,7 +75,7 @@ public class Hero
         {
             this.TakeDamage(recoil);
         }
-            
+
         GameMessages.ShowDamage(this.name, target.name, totalDamage);
         Console.WriteLine($"Магическая отдача нанесла {recoil} урона!");
     }
@@ -119,37 +120,106 @@ public class Hero
 
     public void AddToInventory(Item item)
     {
-        if (inventory.Count < this.maxInventorySize)
-        {
-            this.inventory.Add(item);
-            this.health += item.healthBonus;
-            this.maxHealth += item.healthBonus;
-            this.attackPower += item.attackBonus;
-            this.magicPower += item.magicBonus;
-        }
-        else
-        {
-            Console.WriteLine("Инвентарь полон!");
-        }
+        Item currentItem = Item.Inventory.GetEquippedItem(item.Type);
 
-
-    }
-
-    public void InventoryDisplayInfo()
-    {
-        Console.WriteLine("\n=== ИНВЕНТАРЬ! ===");
-        if (inventory.Count == 0)
+        if (currentItem != null)
         {
-            Console.WriteLine("Инвентарь пуст!");
-        }
-        else
-        {
-            for (int i = 0; i < inventory.Count; i++)
+            Console.WriteLine("\n=== Сравнение предметов ===");
+            Console.WriteLine("\nТекущий предмет:");
+            currentItem.ItemDisplayInfo();
+            Console.WriteLine("\nНовый предмет:");
+            item.ItemDisplayInfo();
+
+            PlayerChoiceMenu();
+
+            int choice = GetPlayerChoiceMenu();
+
+            if (choice == 1)
             {
-                Console.WriteLine($"{i}");
-                inventory[i].ItemDisplayInfo();
+                RemoveItemBonuses(currentItem);
+                Item.Inventory.EquipItem(item);
+                ApplyItemBonuses(item);
+                item.ItemDisplayInfo();
+                Console.WriteLine("\nПредмет успешно экипирован!");
+            }
+            else
+            {
+                Console.WriteLine("Предмет уничтожен!");
+            }
+        }
+        else
+        {
+            Item.Inventory.EquipItem(item);
+            ApplyItemBonuses(item);
+            item.ItemDisplayInfo();
+            Console.WriteLine("\nПредмет успешно экипирован!");
+        }
+
+
+
+        void PlayerChoiceMenu()
+        {
+            Console.WriteLine("\nВыберите действие:");
+            Console.WriteLine("1 - Экипировать");
+            Console.WriteLine("2 - Уничтожить");
+        }
+
+        int GetPlayerChoiceMenu()
+        {
+            int choice;
+            while (true)
+            {
+                Console.Write("Ваш выбор (1-2): ");
+                if (int.TryParse(Console.ReadLine(), out choice) && choice >= 1 && choice <= 2)
+                {
+                    return choice;
+                }
+                Console.WriteLine("Неверный выбор! Введите число от 1 до 2.");
             }
         }
     }
 
+    public void InventoryDisplayInfo()
+    {
+        Console.WriteLine("\n=== ЭКИПИРОВКА ===");
+
+        // Проверяем и выводим каждый слот
+        PrintSlotIfExists(Item.Inventory.head, "Шлем");
+        PrintSlotIfExists(Item.Inventory.hands, "Перчатки");
+        PrintSlotIfExists(Item.Inventory.legs, "Штаны");
+        PrintSlotIfExists(Item.Inventory.body, "Кираса");
+        PrintSlotIfExists(Item.Inventory.rings, "Кольцо");
+        PrintSlotIfExists(Item.Inventory.weapon, "Оружие");
+
+        // Вспомогательный метод для вывода слота
+        void PrintSlotIfExists(Item item, string Type)
+        {
+            if (item != null)
+            {
+                item.ItemDisplayInfo();
+            }
+            else
+            {
+                Console.WriteLine($"\n [{Type}]: Пусто");
+            }
+        }
+    }
+
+    public void RemoveItemBonuses(Item item)
+    {
+        this.health -= item.healthBonus;
+        this.maxHealth -= item.healthBonus;
+        this.attackPower -= item.attackBonus;
+        this.magicPower -= item.magicBonus;
+        this.armor -= item.armorBonus;
+    }
+
+    public void ApplyItemBonuses(Item item)
+    {
+        this.health += item.healthBonus;
+        this.maxHealth += item.healthBonus;
+        this.attackPower += item.attackBonus;
+        this.magicPower += item.magicBonus;
+        this.armor += item.armorBonus;
+    }
 }
